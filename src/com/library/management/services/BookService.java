@@ -1,7 +1,6 @@
 package com.library.management.services;
 
 import com.library.management.models.Book;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +50,15 @@ public class BookService {
         }
     }
 
+    public List <Book> getAllBooks() {
+        List<Book> bookList = new ArrayList<>(bookMap.values());
+
+        if (bookList.isEmpty()) {
+            throw new NoSuchElementException("There are no books!!");
+        }
+        return bookList;
+    }
+
     // Get All Books that have this title
     public List<Book> getBookByTitle (String title) {
         List<Book> bookList = new ArrayList<>();
@@ -89,41 +97,6 @@ public class BookService {
             System.out.println("Book with ISBN: " + book.getIsbn() +" updated successfully");
         } else {
             throw new NoSuchElementException("Book with ISBN " + book.getIsbn() + " does not exist");
-        }
-    }
-
-    public List <Book> getAllBooks() {
-        List<Book> bookList = new ArrayList<>(bookMap.values());
-
-        if (bookList.isEmpty()) {
-            throw new NoSuchElementException("There are no books!!");
-        }
-        return bookList;
-    }
-
-    public int getTotalCopies (int bookIsbn) {
-        if (bookMap.containsKey(bookIsbn)) {
-            return bookMap.get(bookIsbn).getTotalCopies();
-        } else {
-            throw new NoSuchElementException("Book with ISBN " + bookIsbn + " does not exist");
-        }
-    }
-
-    public void increaseAvailableCopies (int isbn) {
-        Book book = bookMap.get(isbn);
-        if ( book != null ) {
-            book.increaseAvailableCopies();
-        } else {
-            throw new NoSuchElementException("Book with ISBN " + isbn + " does not exist");
-        }
-    }
-
-    public void decreaseAvailableCopies (int isbn) {
-        Book book = bookMap.get(isbn);
-        if ( book != null ) {
-            book.decreaseAvailableCopies();
-        } else {
-            throw new NoSuchElementException("Book with ISBN " + isbn + " does not exist");
         }
     }
 

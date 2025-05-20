@@ -2,8 +2,7 @@ package com.library.management.main;
 
 
 import com.library.management.enums.UserRole;
-import com.library.management.models.Book;
-import com.library.management.models.BorrowedBook;
+import com.library.management.models.*;
 import com.library.management.models.users.*;
 import com.library.management.services.BookService;
 import com.library.management.services.BorrowService;
@@ -13,6 +12,7 @@ import com.library.management.services.users.LibrarianService;
 import com.library.management.services.users.MemberService;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +36,7 @@ public class Main {
         BorrowService borrowService = new BorrowService(borrowedBookMap , memberService ,adminService , fineService , bookService );
 
 
-
+        // ADDING USERS
         adminService.addUser(UserRole.ADMIN , 17 , "Ahmed Hagag" ,  "hagag@gmail" ,  true);
 
         adminService.addUser(UserRole.STUDENT , 10 , "Ahmed Alhalwagy" , "halwag@gmail" , true ,
@@ -54,51 +54,59 @@ public class Main {
             System.out.println(user);
         }
 
-        // ADDING NEW BOOKS
-        Book book1 = new Book("Head first java" , "Hansi Flick" , 111 , "Programming" , 100 , 100);
-        Book book2 = new Book("Design Pattern" , "Pedri" , 112 , "Programming" , 100 , 100);
-        Book book3 = new Book("Movie Directing" , " Chris Nolan" , 211 , "Cinema" , 50 , 50);
+        // ADDING BOOKS
+        PaperBook book1 = new PaperBook("Head first java" , "Hansi Flick" , 111 , "Programming" , Year.of(2010) , 100);
+        PaperBook book2 = new PaperBook("Design Pattern" , "Pedri" , 112 , "Programming" , Year.of(2013) , 100);
+        EBook book3 = new EBook ("Movie Directing" , " Chris Nolan" , 113 , "Cinema" , Year.of(2020) , "pdf");
+        DemoBook book4 = new DemoBook("Clean Code" , "Tom cruise" , 114 , "Programming" , Year.of(2000) , "www.cleancode.com" );
 
         System.out.println("------------------------------------------");
         librarianService.addBook(book1);
         librarianService.addBook(book2);
         librarianService.addBook(book3);
+        librarianService.addBook(book4);
 
+        // Get ALL THE BOOKS
         System.out.println("All BOOKS :");
         for (Book book : bookMap.values()) {
             System.out.println(book);
         }
 
+        System.out.println("-----------------------------------------");
+        System.out.println("Only PAPER BOOKS :");
+        for (Book book : bookMap.values()) {
+            if (book instanceof PaperBook) {
+                System.out.println(book);
+            }
+        }
 
-
-        // GET MEMBER BY ID
-//        Member m1 = memberService.getMemberById(11);
-//        System.out.println(m1);
 
         // GET ALL MEMBERS
-//        System.out.println("------------------------------------------");
-//        List<Member> memberList = memberService.getAllMembers();
-//        System.out.println("All Members:");
-//        for (Member member : memberList) {
-//            System.out.println(member);
-//        }
+        System.out.println("------------------------------------------");
+        List<Member> memberList = adminService.getAllMembers();
+        System.out.println("All Members:");
+        for (Member member : memberList) {
+            System.out.println(member);
+        }
 
 
-
-
+        // BORROWING BOOKS
         System.out.println("------------------------------------------");
         borrowService.borrowBook(10 , 111);
-        System.out.println("Available Copies: " + book1.getAvailableCopies());
+        System.out.println("Available Copies: " + book1.getStock());
 
         borrowService.borrowBook(10 , 112);
 
+        // RETURNING A BOOK
         borrowService.returnBook(10 , 111);
-        System.out.println("Available Copies: " + book1.getAvailableCopies());
+        System.out.println("Available Copies: " + book1.getStock());
 
+        // VIEWING BORROWING HISTORY
         System.out.println("------------------------------------------");
         System.out.println("Borrowed Books history : ");
         borrowService.viewBorrowingHistory(10);
 
+        // VIEWING OVERDUE BOOKS
         System.out.println("------------------------------------------");
         borrowService.viewOverdueBooks();
 

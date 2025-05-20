@@ -1,5 +1,6 @@
 package com.library.management.services;
 
+import com.library.management.interfaces.Borrowable;
 import com.library.management.models.*;
 import com.library.management.models.users.Member;
 import com.library.management.services.users.AdminService;
@@ -37,7 +38,6 @@ public class BorrowService {
                 '}';
     }
 
-
     public void borrowBook (int memberId , int bookIsbn) {
 
         Member member = memberService.getMemberById(memberId);
@@ -47,8 +47,16 @@ public class BorrowService {
             throw new NoSuchElementException("Member with ID " + memberId + " does not exist or not active!");
         }
 
-        if (book == null || book.getAvailableCopies() <= 0) {
+        if (book == null ) {
             throw new NoSuchElementException("Book with ISBN " + bookIsbn + " is not available.");
+        }
+
+        if (!(book instanceof PaperBook paperBook)) {
+            throw new IllegalArgumentException("You can not borrow this type of Book!");
+        }
+
+        if (!paperBook.isAvailable()) {
+            throw new NoSuchElementException("We don't have any available Books to Borrow in the stock!");
         }
 
         if (member.getBorrowedBooks().size() >= member.getBorrowLimit()) {
@@ -62,13 +70,13 @@ public class BorrowService {
 
         member.addBorrowedBooks(borrowedBook);
 
-        bookService.decreaseAvailableCopies(bookIsbn);
+        paperBook.decreaseStock();
 
         System.out.println("You have borrowed the book with ISBN: " + bookIsbn + " successfully.");
 
     }
 
-    public void returnBook (int memberId ,  int bookIsbn ) {
+    public void returnBook (int memberId , int bookIsbn ) {
         Member member = memberService.getMemberById(memberId);
 
         if (member == null) {
@@ -87,12 +95,14 @@ public class BorrowService {
             throw new NoSuchElementException("Book with ISBN " + bookIsbn + " wasn't borrowed!");
         }
 
+        PaperBook paperBook = (PaperBook) borrowedBook.getBook();
+
         // Set book as returned and set the return date
         borrowedBook.setReturned(true);
         borrowedBook.setReturnDate(LocalDate.now());
 
         // Update available copies
-        bookService.increaseAvailableCopies(bookIsbn);
+        paperBook.increaseStock();
 
         // Calculate fine
         double fine = fineService.calculateTotalFine(memberId);

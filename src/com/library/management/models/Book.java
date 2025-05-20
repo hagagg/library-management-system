@@ -1,23 +1,22 @@
 package com.library.management.models;
 
-public class Book {
+import java.time.Year;
+
+public abstract class Book {
 
     private String title;
     private String author;
     private int isbn;
     private String category;
-    private int totalCopies;
-    private int availableCopies;
+    private Year publishYear;
 
-    public Book(String title, String author, int isbn, String category, int totalCopies, int availableCopies) {
+    public Book(String title, String author, int isbn, String category, Year publishYear) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.category = category;
-        this.totalCopies = totalCopies;
-        this.availableCopies = availableCopies;
+        this.publishYear = publishYear;
     }
-
 
     public String getTitle() {
         return title;
@@ -35,12 +34,8 @@ public class Book {
         return category;
     }
 
-    public int getTotalCopies() {
-        return totalCopies;
-    }
-
-    public int getAvailableCopies() {
-        return availableCopies;
+    public Year getPublishYear() {
+        return publishYear;
     }
 
     @Override
@@ -50,20 +45,7 @@ public class Book {
                 ", author='" + author + '\'' +
                 ", isbn=" + isbn +
                 ", category='" + category + '\'' +
-                ", totalCopies=" + totalCopies +
-                ", availableCopies=" + availableCopies +
+                ", publishYear=" + publishYear +
                 '}';
-    }
-
-    public void increaseAvailableCopies () {
-        if ( availableCopies <  totalCopies ) {
-            availableCopies ++;
-        }
-    }
-
-    public void decreaseAvailableCopies () {
-        if ( availableCopies > 0 ) {
-            availableCopies --;
-        }
     }
 }

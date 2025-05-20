@@ -23,6 +23,7 @@ public class BorrowedBook {
         return book;
     }
 
+
     public int getMemberId() {
         return memberId;
     }
